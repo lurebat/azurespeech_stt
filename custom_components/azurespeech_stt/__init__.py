@@ -1,1 +1,1 @@
-"""Custom integration for OpenAI TTS."""
+"""Custom integration for AzureSpeech STT."""

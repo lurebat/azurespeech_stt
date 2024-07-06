@@ -20,7 +20,6 @@ from homeassistant.components.stt import (
 import homeassistant.helpers.config_validation as cv
 import wave
 import io
-import openai
 import azure.cognitiveservices.speech as speechsdk
 
 _LOGGER = logging.getLogger(__name__)
@@ -45,7 +44,7 @@ class AzureSpeechSTTProvider(Provider):
     """The Azure Speech STT API provider."""
 
     def __init__(self, hass, api_key, lang, region):
-        """Initialize OpenAI STT provider."""
+        """Initialize AzureSpeech STT provider."""
         self.hass = hass
         self._api_key = api_key
         self._language = lang
@@ -58,7 +57,6 @@ class AzureSpeechSTTProvider(Provider):
     @property
     def supported_languages(self) -> list[str]:
         """Return the list of supported languages."""
-        # Ideally, this list should be dynamically fetched from OpenAI, if supported.
         return self._language.split(',')
 
     @property
