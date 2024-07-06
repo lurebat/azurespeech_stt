@@ -1,5 +1,5 @@
 """
-Support for OpenAI STT.
+Support for AzureSpeech STT.
 """
 import logging
 from typing import AsyncIterable
@@ -17,7 +17,6 @@ from homeassistant.components.stt import (
     SpeechResult,
     SpeechResultState,
 )
-from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
 import wave
 import io
@@ -28,43 +27,28 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_API_KEY = 'api_key'
 DEFAULT_LANG = 'en-US'
-OPENAI_STT_URL = "https://api.openai.com/v1/audio/transcriptions"
-CONF_MODEL = 'model'
-CONF_URL = 'url'
-CONF_PROMPT = 'prompt'
-CONF_TEMPERATURE = 'temperature'
 
 PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA.extend({
     vol.Required(CONF_API_KEY): cv.string,
+    vol.Required("region"): cv.string,
     vol.Optional(CONF_LANG, default=DEFAULT_LANG): cv.string,
-    vol.Optional(CONF_MODEL, default='whisper'): cv.string,
-    vol.Optional(CONF_URL, default=None): cv.string,
-    vol.Optional(CONF_PROMPT, default=None): cv.string,
-    vol.Optional(CONF_TEMPERATURE, default=0.1): cv.positive_float,
 })
 
 async def async_get_engine(hass, config, discovery_info=None):
-    """Set up OpenAI STT speech component."""
+    """Set up Azure Speech STT speech component."""
     api_key = config[CONF_API_KEY]
     languages = config.get(CONF_LANG, DEFAULT_LANG)
-    model = config.get(CONF_MODEL)
-    url = config.get('url')
-    prompt = config.get('prompt')
-    temperature = config.get('temperature')
-    return OpenAISTTProvider(hass, api_key, languages, model, url, prompt, temperature)
+    region = config.get('region')
+    return AzureSpeechSTTProvider(hass, api_key, languages, region)
 
-class OpenAISTTProvider(Provider):
-    """The OpenAI STT API provider."""
+class AzureSpeechSTTProvider(Provider):
+    """The Azure Speech STT API provider."""
 
-    def __init__(self, hass, api_key, lang, model, url, prompt, temperature):
+    def __init__(self, hass, api_key, lang, region):
         """Initialize OpenAI STT provider."""
         self.hass = hass
         self._api_key = api_key
         self._language = lang
-        self._model = model
-        self._url = url
-        self._prompt = prompt or f"You are transcribing a command to a virtual assistant. The possible languages are {self.supported_languages}." 
-        self._temperature = temperature
 
     @property
     def default_language(self) -> str:
@@ -124,6 +108,10 @@ class OpenAISTTProvider(Provider):
             wav_file.writeframes(data)
             
         wav_stream.seek(0)
+
+        config = speechsdk.SpeechConfig(subscription=self._api_key, region=self._region)
+
+        
 
         async with async_timeout.timeout(20):
             async with openai.OpenAI(

@@ -1,11 +1,11 @@
 {
-  "domain": "openai_stt",
-  "name": "OpenAI STT",
+  "domain": "azurespeech_stt",
+  "name": "AzureSpeech STT",
   "codeowners": ["@lurebat"],
   "dependencies": [],
-  "documentation": "https://github.com/lurebat/openai_stt/",
+  "documentation": "https://github.com/lurebat/azurespeech_stt/",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/lurebat/openai_stt/issues",
-  "requirements": ["openai"],
-  "version": "0.2.0"
+  "issue_tracker": "https://github.com/lurebat/azurespeech_stt/issues",
+  "requirements": ["azure-cognitiveservices-speech==1.38.0"],
+  "version": "0.1.0"
 }

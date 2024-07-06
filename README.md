@@ -4,9 +4,8 @@
 
 ```yaml
 stt:
-  - platform: openai_stt
+  - platform: azurespeech_stt
     api_key: "your_api_key_here"
+    region: "your_region_here"
     # Optional parameters:
     language: "en-US"
-    model: "whisper"
-    prompt: "You are transcribing a command to a virtual assistant."
