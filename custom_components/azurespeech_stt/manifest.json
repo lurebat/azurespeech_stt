@@ -6,6 +6,6 @@
   "documentation": "https://github.com/lurebat/azurespeech_stt/",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/lurebat/azurespeech_stt/issues",
-  "requirements": ["azure-cognitiveservices-speech==1.38.0"],
+  "requirements": ["azure-cognitiveservices-speech"],
   "version": "0.1.0"
 }
