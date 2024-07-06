@@ -111,27 +111,11 @@ class AzureSpeechSTTProvider(Provider):
 
         config = speechsdk.SpeechConfig(subscription=self._api_key, region=self._region)
 
-        
+        reg = speechsdk.SpeechRecognizer(speech_config=config, audio_config=speechsdk.AudioConfig(stream=wav_stream), auto_detect_source_language_config=speechsdk.AutoDetectSourceLanguageConfig(languages=self.supported_languages))
 
         async with async_timeout.timeout(20):
-            async with openai.OpenAI(
-                api_key=self._api_key,
-                base_url=self._url
-            ) as openai_client:
-                try:
-                    res = await openai_client.audio.transcriptions.create(
-                        audio=wav_stream,
-                        model=self._model,
-                        prompt=self._prompt,
-                        temperature=self._temperature,
-                        response_format="text"
-                    )
-
-                    if res is None:
-                        return SpeechResult("Couldn't transcribe text", SpeechResultState.ERROR)
-                    
-                    return SpeechResult(res.text, SpeechResultState.SUCCESS)
-                
-                except Exception as e:
-                    _LOGGER.error("Failed to transcribe audio: %s", e)
-                    return SpeechResult(str(e), SpeechResultState.ERROR)
+            result = await reg.recognize_once_async()
+            if result.reason == speechsdk.ResultReason.RecognizedSpeech:
+                return SpeechResult(result.text, SpeechResultState.SUCCESS)
+            else:
+                return SpeechResult(str(result.reason), SpeechResultState.ERROR)
