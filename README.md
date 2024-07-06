@@ -1,4 +1,4 @@
-# openai_stt
+# azurespeech_stt
 
 5. Configure the component in your `configuration.yaml` file:
 

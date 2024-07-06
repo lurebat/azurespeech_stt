@@ -1,5 +1,5 @@
 {
-    "name": "OpenAI STT for HACS - lurebat",
+    "name": "AzureSpeech STT for HACS - lurebat",
     "homeassistant": "2023.9.0",
     "render_readme": true
 }
